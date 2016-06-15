@@ -1,0 +1,20 @@
+PATH
+  remote: .
+  specs:
+    memfd (1.0.0)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    minitest (5.8.4)
+    rake (11.1.2)
+    rake-compiler (0.9.8)
+      rake
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  memfd!
+  minitest (~> 5.8)
+  rake-compiler (~> 0.9)
