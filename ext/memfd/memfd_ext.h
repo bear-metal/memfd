@@ -54,6 +54,8 @@
 extern VALUE rb_cMemfd;
 extern VALUE rb_eMemfd;
 
+const rb_data_type_t memfd_type;
+
 typedef struct {
     VALUE name;
     VALUE flags;
@@ -65,8 +67,7 @@ typedef struct {
 
 #define GetMemfd(obj) \
     memfd_wrapper *memfd = NULL; \
-    Data_Get_Struct(obj, memfd_wrapper, memfd); \
-    if (!memfd) rb_raise(rb_eTypeError, "uninitialized Memfd wrapper!"); \
+    TypedData_Get_Struct(obj, memfd_wrapper, &memfd_type, memfd); \
 
 #define MemfdError(error, message) \
     if (memfd->fd != -1) { \

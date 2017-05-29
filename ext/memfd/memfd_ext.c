@@ -14,7 +14,7 @@ static int rb_memfd_syscall_memfd_create(const char *name, unsigned int flags)
     return fd;
 }
 
-static void rb_memfd_gc_free(void *ptr)
+static inline void rb_memfd_gc_free(void *ptr)
 {
     memfd_wrapper *memfd = (memfd_wrapper *)ptr;
     if (memfd) {
@@ -23,7 +23,7 @@ static void rb_memfd_gc_free(void *ptr)
     }
 }
 
-static void rb_memfd_gc_mark(void *ptr)
+static inline void rb_memfd_gc_mark(void *ptr)
 {
     memfd_wrapper *memfd = (memfd_wrapper *)ptr;
     if (memfd) {
@@ -33,6 +33,21 @@ static void rb_memfd_gc_mark(void *ptr)
     }
 }
 
+static inline size_t rb_memfd_memsize(const void *ptr)
+{
+  return sizeof(memfd_wrapper);
+}
+
+const rb_data_type_t memfd_type = {
+  "memfd",
+  {
+    rb_memfd_gc_mark,
+    rb_memfd_gc_free,
+    rb_memfd_memsize
+  },
+  NULL, NULL, RUBY_TYPED_FREE_IMMEDIATELY
+};
+
 static VALUE rb_memfd_s_new(int argc, VALUE *argv, VALUE mod)
 {
     memfd_wrapper *memfd = NULL;
@@ -40,7 +55,7 @@ static VALUE rb_memfd_s_new(int argc, VALUE *argv, VALUE mod)
     VALUE obj;
 
     rb_check_arity(argc, 0, 2);
-    obj = Data_Make_Struct(rb_cMemfd, memfd_wrapper, rb_memfd_gc_mark, rb_memfd_gc_free, memfd);
+    obj = TypedData_Make_Struct(rb_cMemfd, memfd_wrapper, &memfd_type, memfd);
     memfd->io = Qnil;
     memfd->region = NULL;
     memfd->size = 0;
