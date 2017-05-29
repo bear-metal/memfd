@@ -89,8 +89,8 @@ static VALUE rb_memfd_io(VALUE obj)
 
 static VALUE rb_memfd_map(VALUE obj, VALUE size, VALUE offset)
 {
-    GetMemfd(obj);
     int ret;
+    GetMemfd(obj);
     memfd->size = (size_t)NUM2LONG(size);
     ret = ftruncate(memfd->fd, (off_t)memfd->size);
     if (ret == -1) {

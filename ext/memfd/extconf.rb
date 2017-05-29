@@ -14,6 +14,11 @@ require_header "sys/syscall.h"
 require_header "linux/fcntl.h"
 require_header "sys/mman.h"
 
-$CFLAGS << " -std=c99 -pedantic -Wall -fno-strict-aliasing"
+$CFLAGS = "-D_GNU_SOURCE -Werror -Wall "
+if ENV.key?('DEBUG')
+  $CFLAGS << "-O0 -g -DDEBUG"
+else
+  $CFLAGS << "-O3"
+end
 
 create_makefile('memfd/memfd_ext')
