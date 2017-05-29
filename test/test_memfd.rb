@@ -15,10 +15,9 @@ class TestMemfd < Minitest::Test
 
   def test_fd
     mfd = Memfd.new
-    assert_instance_of Fixnum, mfd.fd
     assert_equal mfd.fd, mfd.io.fileno
     mfd.unmap
-    assert_equal -1, mfd.fd
+    assert_equal(-1, mfd.fd)
   end
 
   def test_name

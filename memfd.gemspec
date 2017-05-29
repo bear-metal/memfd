@@ -20,6 +20,6 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   s.required_ruby_version = '>= 2.1.0'
 
-  s.add_development_dependency('rake-compiler', '~> 0.9')
-  s.add_development_dependency('minitest', '~> 5.8')
+  s.add_development_dependency('rake-compiler', '~> 1.0.4')
+  s.add_development_dependency('minitest', '~> 5.10.2')
 end
