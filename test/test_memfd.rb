@@ -1,5 +1,6 @@
 require 'memfd'
 require 'minitest/autorun'
+require 'socket'
 
 class TestMemfd < Minitest::Test
   def test_seals
@@ -117,5 +118,17 @@ class TestMemfd < Minitest::Test
     assert_raises Errno::EPERM do
       mfd.io.rewind
     end
+  end
+
+  def test_zero_copy_xfer
+    payload = 'test_zero_copy_xfer'
+    mfd = Memfd.map('zero copy')
+    size = mfd.io.write(payload)
+    mfd.io.rewind
+    mfd.seal!
+    server, client = UNIXSocket.pair
+    server.send "#{mfd.fd}|#{mfd.size}", 0
+    fd, size = client.recv(1024).split("|")
+    assert_equal payload.dup, Memfd.read(fd.to_i, size.to_i)
   end
 end

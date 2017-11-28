@@ -10,7 +10,7 @@
 
 Memfd is a wrapper around the `memfd_create` system call which creates an anonymous memory-backed file and returns a file descriptor reference to it. It provides a simple alternative to manually mounting a `tmpfs` filesystem and creating and opening a file in that filesystem. The file is a regular file on a kernel-internal filesystem and thus supports most operations such as `ftruncate(2)`, `read(2)`, `dup(2)`, `mmap(2)` etc.
 
-Imagine that `malloc(3)` returns a file descriptor instead of a pointer. The system call also introduced a new feature called "file sealing". With file sealing you can specify to the kernel that the file backed by anonymous memory has certain restrictions such as: no writes occur to the file, and the file size does not shrink or grow. For IPC based servers the `F_SEAL_SHRINK` seal is of interest ask the server can be sure clients won't shrink it's buffers and can read files without side effects of unexpected shrinking.
+Imagine that `malloc(3)` returns a file descriptor instead of a pointer. The system call also introduced a new feature called "file sealing". With file sealing you can specify to the kernel that the file backed by anonymous memory has certain restrictions such as: no writes occur to the file, and the file size does not shrink or grow. For IPC based servers the `F_SEAL_SHRINK` seal is of interest and the server can be sure clients won't shrink it's buffers and can read files without side effects of unexpected shrinking.
 
 ## Use cases
 

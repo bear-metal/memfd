@@ -78,6 +78,16 @@ static VALUE rb_memfd_s_new(int argc, VALUE *argv, VALUE mod)
     return obj;
 }
 
+static VALUE rb_memfd_read(VALUE obj, VALUE fd, VALUE size)
+{
+  char * data;
+  Check_Type(fd, T_FIXNUM);
+  Check_Type(size, T_FIXNUM);
+  data = mmap(NULL, (size_t)NUM2INT(size), PROT_READ, MAP_PRIVATE, NUM2INT(fd), 0);
+  if (data == MAP_FAILED) rb_sys_fail("rb_memfd_read");
+  return rb_str_new_cstr(data);
+}
+
 static VALUE rb_memfd_name(VALUE obj)
 {
     GetMemfd(obj);
@@ -113,7 +123,7 @@ static VALUE rb_memfd_map(VALUE obj, VALUE size, VALUE offset)
     }
     memfd->region = mmap(NULL, (size_t)memfd->size, PROT_READ | PROT_WRITE, MAP_SHARED, memfd->fd, (uint64_t)NUM2INT(offset));
     if (memfd->region == MAP_FAILED) {
-       MemfdAllocError("mmap region allocation failed!")
+       MemfdAllocError("rb_memfd_map")
        return Qnil;
     }
     return obj;
@@ -160,6 +170,7 @@ void Init_memfd_ext()
     rb_define_const(rb_cMemfd, "F_SEAL_GROW", INT2NUM(F_SEAL_GROW));
     rb_define_const(rb_cMemfd, "F_SEAL_WRITE", INT2NUM(F_SEAL_WRITE));
 
+    // Server
     rb_define_singleton_method(rb_cMemfd, "new", rb_memfd_s_new, -1);
     rb_define_method(rb_cMemfd, "name", rb_memfd_name, 0);
     rb_define_method(rb_cMemfd, "flags", rb_memfd_flags, 0);
@@ -170,4 +181,7 @@ void Init_memfd_ext()
     rb_define_method(rb_cMemfd, "map", rb_memfd_map, 2);
     rb_define_method(rb_cMemfd, "unmap", rb_memfd_unmap, -1);
     rb_define_alias(rb_cMemfd,  "close", "unmap");
+
+    // Client
+    rb_define_singleton_method(rb_cMemfd, "read", rb_memfd_read, 2);
 }
