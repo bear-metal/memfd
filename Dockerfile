@@ -9,4 +9,4 @@ ADD lib/memfd/version.rb /memfd/lib/memfd/version.rb
 RUN bundle install
 # run tests
 ADD . /memfd
-CMD bundle exec rake
+CMD bundle exec rake bench

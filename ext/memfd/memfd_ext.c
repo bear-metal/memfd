@@ -78,12 +78,13 @@ static VALUE rb_memfd_s_new(int argc, VALUE *argv, VALUE mod)
     return obj;
 }
 
-static VALUE rb_memfd_read(VALUE obj, VALUE fd, VALUE size)
+static VALUE rb_memfd_s_read(VALUE obj, VALUE fd)
 {
   char * data;
+  //off_t fsize;
   Check_Type(fd, T_FIXNUM);
-  Check_Type(size, T_FIXNUM);
-  data = mmap(NULL, (size_t)NUM2INT(size), PROT_READ, MAP_PRIVATE, NUM2INT(fd), 0);
+  //fsize = lseek(NUM2INT(fd), 0, SEEK_END);
+  data = mmap(NULL, (size_t)1600000, PROT_READ, MAP_PRIVATE, NUM2INT(fd), 0);
   if (data == MAP_FAILED) rb_sys_fail("rb_memfd_read");
   return rb_str_new_cstr(data);
 }
@@ -172,6 +173,7 @@ void Init_memfd_ext()
 
     // Server
     rb_define_singleton_method(rb_cMemfd, "new", rb_memfd_s_new, -1);
+    
     rb_define_method(rb_cMemfd, "name", rb_memfd_name, 0);
     rb_define_method(rb_cMemfd, "flags", rb_memfd_flags, 0);
     rb_define_method(rb_cMemfd, "fd", rb_memfd_fd, 0);
@@ -183,5 +185,5 @@ void Init_memfd_ext()
     rb_define_alias(rb_cMemfd,  "close", "unmap");
 
     // Client
-    rb_define_singleton_method(rb_cMemfd, "read", rb_memfd_read, 2);
+    rb_define_singleton_method(rb_cMemfd, "read", rb_memfd_s_read, 1);
 }

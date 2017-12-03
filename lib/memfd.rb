@@ -1,11 +1,18 @@
 require 'memfd/version' unless defined? MemFD::VERSION
 require 'memfd/memfd_ext'
-require 'socket'
 require 'fcntl'
 
 class Memfd
+  autoload :Server, 'memfd/server'
+  autoload :Client, 'memfd/client'
+
   def self.map(name, size = MFD_DEF_SIZE, offset = 0)
     new(name, MFD_CLOEXEC | MFD_ALLOW_SEALING).map(size, offset)
+  end
+
+  def write(data)
+    io.write(data)
+    io.rewind
   end
 
   def seals
