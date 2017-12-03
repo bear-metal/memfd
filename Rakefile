@@ -26,5 +26,10 @@ namespace :debug do
   end
 end
 
+task :bench do
+  ruby 'bench/perf.rb'
+end
+
+task :bench => :compile
 task :test => :compile
 task :default => :test

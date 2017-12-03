@@ -1,6 +1,5 @@
 require 'memfd'
 require 'minitest/autorun'
-require 'socket'
 
 class TestMemfd < Minitest::Test
   def test_seals

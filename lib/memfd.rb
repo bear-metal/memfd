@@ -1,5 +1,6 @@
 require 'memfd/version' unless defined? MemFD::VERSION
 require 'memfd/memfd_ext'
+require 'socket'
 require 'fcntl'
 
 class Memfd
